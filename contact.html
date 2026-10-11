@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us | ToolBestie</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3977672777442834"
+     crossorigin="anonymous"></script>
+  <style>
+    :root { --bg: #0b0f19; --card-bg: #151d2f; --accent: #38bdf8; --text: #f1f5f9; --text-muted: #94a3b8; --border: #334155; --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    [data-theme="light"] { --bg: #f8fafc; --card-bg: #ffffff; --accent: #0284c7; --text: #0f172a; --text-muted: #64748b; --border: #e2e8f0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; line-height: 1.6; }
+    header { padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg); }
+    .logo { font-size: 1.25rem; font-weight: 700; color: var(--accent); text-decoration: none; }
+    .theme-toggle-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    main { flex: 1; max-width: 800px; width: 100%; margin: 3rem auto; padding: 0 1.25rem; }
+    h1 { color: var(--accent); margin-bottom: 1.5rem; }
+    h2 { color: var(--text); margin-top: 1.5rem; margin-bottom: 0.75rem; }
+    p { margin-bottom: 1rem; color: var(--text-muted); }
+    ul { margin-left: 2rem; margin-bottom: 1rem; color: var(--text-muted); }
+    footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 2rem; margin-top: auto; }
+    .footer-content { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+    .footer-links a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+    .footer-links a:hover { text-decoration: underline; }
+    .copyright { color: var(--text-muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    <a href="index.html" class="logo">⚡ ToolBestie</a>
+    <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">☀️ Light Mode</button>
+  </header>
+  <main>
+    <h1>Contact Us</h1>
+    
+<p>Have a question, suggestion, or found a bug? We would love to hear from you.</p>
+<p>Please reach out to us via email at:</p>
+<h3 style="color: var(--text); padding: 1rem; background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; display: inline-block;">
+  hitesh.kuma1006@gmail.com
+</h3>
+<p style="margin-top: 2rem;"><em>Note: We try to respond to all inquiries within 1 week.</em></p>
+
+  </main>
+  <footer>
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="about.html">About Us</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+      <div class="copyright">&copy; 2026 ToolBestie. All rights reserved.</div>
+    </div>
+  </footer>
+  <script>
+    function applyTheme(theme) { document.body.setAttribute('data-theme', theme); document.getElementById('theme-btn').innerHTML = theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'; }
+    const savedTheme = localStorage.getItem('omnitool_theme') || 'dark'; applyTheme(savedTheme);
+    function toggleTheme() { const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; applyTheme(newTheme); localStorage.setItem('omnitool_theme', newTheme); }
+  </script>
+</body>
+</html>

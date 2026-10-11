@@ -1,266 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3977672777442834" crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tool Hub | JSON Studio & Word Counter</title>
+  <meta name="description" content="OmniTool Hub provides free, robust developer and writer tools including a JSON formatter, validator, and real-time word counter. Streamline your workflow today." />
+  <meta name="keywords" content="JSON formatter, JSON validator, word counter, character count, developer tools, SaaS tools, cloud computing utilities" />
+  <title>OmniTool Hub | Free JSON Formatter & Word Counter</title>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3977672777442834"
+     crossorigin="anonymous"></script>
+
   <style>
-    /* Defaul Theme */
     :root {
-      --bg: #0b0f19;
-      --card-bg: #151d2f;
-      --card-header: #1e293b;
-      --accent: #38bdf8;
-      --accent-hover: #0284c7;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --success: #22c55e;
-      --danger: #ef4444;
-      --code-bg: #090d16;
-      --code-text: #38bdf8;
-      --nav-bg: #060911;
+      --bg: #0b0f19; --card-bg: #151d2f; --card-header: #1e293b; --accent: #38bdf8; --accent-hover: #0284c7;
+      --text: #f1f5f9; --text-muted: #94a3b8; --border: #334155; --success: #22c55e; --danger: #ef4444;
+      --code-bg: #090d16; --code-text: #38bdf8; --nav-bg: #060911;
       --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
-
-    /* Light Theme Overrides */
     [data-theme="light"] {
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --card-header: #f1f5f9;
-      --accent: #0284c7;
-      --accent-hover: #0369a1;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --code-bg: #f8fafc;
-      --code-text: #0f172a;
-      --nav-bg: #e2e8f0;
+      --bg: #f8fafc; --card-bg: #ffffff; --card-header: #f1f5f9; --accent: #0284c7; --accent-hover: #0369a1;
+      --text: #0f172a; --text-muted: #64748b; --border: #e2e8f0; --code-bg: #f8fafc; --code-text: #0f172a; --nav-bg: #e2e8f0;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
-    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
-
-    /* Top Nav / Tool Selection */
-    header {
-      padding: 1rem 2rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--bg);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; line-height: 1.6; }
+    header { padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg); position: sticky; top: 0; z-index: 100; }
     .header-left { display: flex; align-items: center; gap: 2rem; }
-    
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .nav-tabs {
-      display: flex;
-      background: var(--nav-bg);
-      padding: 0.25rem;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      gap: 0.25rem;
-    }
-    .nav-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 0.55rem 1.25rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+    .logo { font-size: 1.25rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+    .nav-tabs { display: flex; background: var(--nav-bg); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--border); gap: 0.25rem; }
+    .nav-btn { background: transparent; border: none; color: var(--text-muted); padding: 0.55rem 1.25rem; font-weight: 600; font-size: 0.9rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
     .nav-btn:hover { color: var(--text); }
-    .nav-btn.active {
-      background: var(--card-bg);
-      color: var(--accent);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .theme-toggle-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .theme-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* Main Container */
+    .nav-btn.active { background: var(--card-bg); color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .theme-toggle-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
     main { flex: 1; max-width: 1280px; width: 100%; margin: 1.5rem auto; padding: 0 1.25rem; }
-
-    /* Ad Placeholder Box */
-    .ad-banner {
-      background: var(--card-bg);
-      border: 1px dashed var(--border);
-      border-radius: 8px;
-      padding: 0.85rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      margin-bottom: 1.5rem;
-      opacity: 0.7;
-    }
-
-    /* Panels */
+    .ad-banner { background: var(--card-bg); border: 1px dashed var(--border); border-radius: 8px; padding: 0.85rem; text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1.5rem; }
     .tool-panel { display: none; }
     .tool-panel.active { display: block; animation: fadeIn 0.2s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Button Controls */
     .btn-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; align-items: center; }
-    button.btn {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.5rem 0.9rem;
-      border-radius: 6px;
-      font-weight: 500;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
+    button.btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.9rem; border-radius: 6px; font-weight: 500; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; }
     button.btn:hover { border-color: var(--accent); color: var(--accent); }
     button.btn-primary { background: var(--accent); color: #ffffff; border-color: var(--accent); font-weight: 600; }
     [data-theme="dark"] button.btn-primary { color: #0b0f19; }
-    button.btn-primary:hover { background: var(--accent-hover); color: #fff; }
-
-    /* JSON Workspace */
-    .editor-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      height: 520px;
-    }
-    @media (max-width: 860px) {
-      .editor-layout { grid-template-columns: 1fr; height: auto; }
-      .header-left { flex-direction: column; gap: 1rem; align-items: flex-start; }
-      header { flex-direction: column; gap: 1rem; align-items: flex-start; }
-    }
-    .pane-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-    .pane-header {
-      background: var(--card-header);
-      padding: 0.6rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
-    textarea.code-editor {
-      width: 100%;
-      height: 100%;
-      min-height: 440px;
-      background: var(--code-bg);
-      border: none;
-      color: var(--code-text);
-      font-family: var(--mono);
-      font-size: 0.875rem;
-      padding: 1rem;
-      resize: none;
-      line-height: 1.5;
-      outline: none;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .status-badge {
-      font-size: 0.75rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-weight: 600;
-    }
+    .editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; height: 500px; }
+    @media (max-width: 860px) { .editor-layout { grid-template-columns: 1fr; height: auto; } .header-left, header { flex-direction: column; align-items: flex-start; gap: 1rem;} }
+    .pane-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; }
+    .pane-header { background: var(--card-header); padding: 0.6rem 1rem; font-size: 0.85rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+    textarea.code-editor { width: 100%; height: 100%; min-height: 400px; background: var(--code-bg); border: none; color: var(--code-text); font-family: var(--mono); font-size: 0.875rem; padding: 1rem; resize: none; outline: none; }
+    .status-badge { font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; }
     .status-ok { background: rgba(34, 197, 94, 0.15); color: var(--success); }
     .status-err { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
-
-    /* Word Counter Stats Grid */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-    }
-    .stat-tile {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 1rem 0.75rem;
-      border-radius: 8px;
-      text-align: center;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem; }
+    .stat-tile { background: var(--card-bg); border: 1px solid var(--border); padding: 1rem 0.75rem; border-radius: 8px; text-align: center; }
     .stat-number { font-size: 1.75rem; font-weight: 700; color: var(--accent); }
     .stat-desc { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-top: 0.35rem; }
-
-    /* Toast Notification */
-    #toast {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      background: var(--accent);
-      color: #ffffff;
-      font-weight: 600;
-      padding: 0.65rem 1.25rem;
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 1000;
-    }
+    .content-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .content-section h1, .content-section h2, .content-section h3 { color: var(--accent); margin-bottom: 1rem; margin-top: 1.5rem; }
+    .content-section p { margin-bottom: 1rem; color: var(--text-muted); }
+    .content-section ul { margin-left: 2rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+    .content-section li { margin-bottom: 0.5rem; }
+    footer { background: var(--card-bg); border-top: 1px solid var(--border); padding: 2rem; margin-top: auto; }
+    .footer-content { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+    .footer-links a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+    .footer-links a:hover { text-decoration: underline; }
+    .copyright { color: var(--text-muted); font-size: 0.85rem; }
+    #toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--accent); color: #ffffff; font-weight: 600; padding: 0.65rem 1.25rem; border-radius: 6px; display: none; z-index: 1000; }
     [data-theme="dark"] #toast { color: #0b0f19; }
   </style>
 </head>
 <body data-theme="dark">
-
   <header>
     <div class="header-left">
-      <div class="logo">⚡ ToolBestie Hub</div>
+      <a href="index.html" class="logo">⚡ OmniTool Hub</a>
       <nav class="nav-tabs">
         <button class="nav-btn active" onclick="activateTool('json', this)">JSON Studio</button>
         <button class="nav-btn" onclick="activateTool('word', this)">Word Counter</button>
       </nav>
     </div>
-    <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
-      <span id="theme-icon">☀️</span> Light Mode
-    </button>
+    <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn"><span id="theme-icon">☀️</span> Light Mode</button>
   </header>
 
   <main>
-  <div class="ad-banner">
-      <span>Responsive Ad Placement (Google AdSense / Carbon Ads)</span>
-    </div>
+    <div class="ad-banner"><span>Responsive Ad Placement (Google AdSense)</span></div>
 
-    <!-- TOOL 1: JSON STUDIO -->
     <section id="tool-json" class="tool-panel active">
       <div class="btn-bar">
         <button class="btn btn-primary" onclick="formatJSON(2)">Beautify 2-Space</button>
@@ -268,27 +91,20 @@
         <button class="btn" onclick="minifyJSON()">Minify</button>
         <button class="btn" onclick="validateJSON()">Validate</button>
         <button class="btn" onclick="copyText('json-out')">Copy Output</button>
-        <button class="btn" onclick="clearJSON()">Clear All</button>
+        <button class="btn" onclick="clearJSON()">Clear</button>
       </div>
-
       <div class="editor-layout">
         <div class="pane-card">
-          <div class="pane-header">
-            <span>Input JSON</span>
-            <span id="json-status" class="status-badge" style="display:none;"></span>
-          </div>
+          <div class="pane-header"><span>Input JSON</span><span id="json-status" class="status-badge" style="display:none;"></span></div>
           <textarea id="json-in" class="code-editor" placeholder="Paste or type raw JSON here..."></textarea>
         </div>
         <div class="pane-card">
-          <div class="pane-header">
-            <span>Processed Output</span>
-          </div>
-          <textarea id="json-out" class="code-editor" placeholder="Formatted or minified output will display here..." readonly></textarea>
+          <div class="pane-header"><span>Processed Output</span></div>
+          <textarea id="json-out" class="code-editor" placeholder="Formatted output will display here..." readonly></textarea>
         </div>
       </div>
     </section>
 
-    <!-- TOOL 2: WORD COUNTER & TEXT UTILITY -->
     <section id="tool-word" class="tool-panel">
       <div class="stats-row">
         <div class="stat-tile"><div class="stat-number" id="val-words">0</div><div class="stat-desc">Words</div></div>
@@ -298,160 +114,115 @@
         <div class="stat-tile"><div class="stat-number" id="val-paras">0</div><div class="stat-desc">Paragraphs</div></div>
         <div class="stat-tile"><div class="stat-number" id="val-reading">0m</div><div class="stat-desc">Reading Time</div></div>
       </div>
-
       <div class="btn-bar">
         <button class="btn" onclick="changeCase('upper')">UPPERCASE</button>
         <button class="btn" onclick="changeCase('lower')">lowercase</button>
         <button class="btn" onclick="changeCase('title')">Title Case</button>
-        <button class="btn" onclick="removeExtraSpaces()">Remove Extra Spaces</button>
+        <button class="btn" onclick="removeExtraSpaces()">Clean Spaces</button>
         <button class="btn" onclick="copyText('text-editor')">Copy Text</button>
         <button class="btn" onclick="clearText()">Clear</button>
       </div>
-
-      <div class="pane-card" style="height: 420px;">
+      <div class="pane-card" style="height: 400px;">
         <textarea id="text-editor" class="code-editor" style="color: var(--text);" placeholder="Start typing or paste content to get live word metrics..."></textarea>
       </div>
     </section>
+
+    <section class="content-section">
+      <h1>OmniTool Hub: The Ultimate Developer & Writer Companion</h1>
+      <p>Welcome to OmniTool Hub, a unified platform designed to streamline your daily digital tasks. Whether you are debugging complex data payloads or optimizing content for publishing, our client-side tools run instantly in your browser, ensuring maximum privacy and speed.</p>
+      
+      <h2>Understanding JSON Validation and Formatting</h2>
+      <p>JavaScript Object Notation (JSON) has become the de facto standard for data exchange on the web. As developers build robust backend infrastructures and explore cloud computing service models, handling JSON payloads correctly is critical.</p>
+      <p>Our <strong>JSON Studio</strong> helps you ensure your payloads are error-free. By parsing raw strings, checking for syntax errors, and applying proper indentation (beautifying), you can easily debug API responses. Conversely, the minification tool strips out unnecessary whitespace, reducing payload size for faster network transmission.</p>
+
+      <h2>Why Word and Character Counts Matter</h2>
+      <p>For creators exploring digital content monetization strategies, precision is everything. Platforms like Instagram, YouTube, and independent blogs rely heavily on algorithmic interpretation of your text.</p>
+      <ul>
+        <li><strong>Character Limits:</strong> Social media platforms impose strict character limits on titles and descriptions. Our tool calculates both standard characters and characters without spaces.</li>
+        <li><strong>Readability & Reading Time:</strong> Knowing how many sentences and paragraphs are in your text allows you to gauge readability. Our reading time metric calculates how long it takes an average user to consume your content.</li>
+        <li><strong>Text Formatting:</strong> Instantly convert your text to UPPERCASE, lowercase, or Title Case, and remove accidental double spaces with a single click.</li>
+      </ul>
+    </section>
   </main>
+
+  <!-- LEGAL FOOTER WITH REAL LINKS -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="about.html">About Us</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="contact.html">Contact Us</a>
+      </div>
+      <div class="copyright">
+        &copy; 2026 OmniTool Hub. All rights reserved.
+      </div>
+    </div>
+  </footer>
 
   <div id="toast">Copied to clipboard!</div>
 
   <script>
-    // --- THEME LOGIC ---
     function applyTheme(theme) {
       document.body.setAttribute('data-theme', theme);
-      const btn = document.getElementById('theme-btn');
-      if (theme === 'light') {
-        btn.innerHTML = '<span>🌙</span> Dark Mode';
-      } else {
-        btn.innerHTML = '<span>☀️</span> Light Mode';
-      }
+      document.getElementById('theme-btn').innerHTML = theme === 'light' ? '<span>🌙</span> Dark Mode' : '<span>☀️</span> Light Mode';
     }
-
-    // Load saved theme on startup
     const savedTheme = localStorage.getItem('omnitool_theme') || 'dark';
     applyTheme(savedTheme);
-
     function toggleTheme() {
-      const currentTheme = document.body.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       applyTheme(newTheme);
       localStorage.setItem('omnitool_theme', newTheme);
     }
 
-    // --- TOOL LOGIC ---
     function activateTool(toolId, btnElement) {
       document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      
       document.getElementById('tool-' + toolId).classList.add('active');
       btnElement.classList.add('active');
     }
 
-    // Toast Utility
     function showToast(message) {
       const toast = document.getElementById('toast');
       toast.textContent = message;
       toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 2000);
+      setTimeout(() => toast.style.display = 'none', 2000);
     }
-
     function copyText(elemId) {
       const elem = document.getElementById(elemId);
-      if (!elem.value) return;
-      navigator.clipboard.writeText(elem.value).then(() => {
-        showToast('Copied to clipboard!');
-      });
+      if (elem.value) navigator.clipboard.writeText(elem.value).then(() => showToast('Copied to clipboard!'));
     }
 
-    // JSON Studio Logic
-    const jsonIn = document.getElementById('json-in');
-    const jsonOut = document.getElementById('json-out');
-    const jsonStatus = document.getElementById('json-status');
-
+    const jsonIn = document.getElementById('json-in'), jsonOut = document.getElementById('json-out'), jsonStatus = document.getElementById('json-status');
     function parseJSONContent() {
-      const val = jsonIn.value.trim();
-      if (!val) {
-        jsonStatus.style.display = 'none';
-        return null;
-      }
-      try {
-        const obj = JSON.parse(val);
-        jsonStatus.textContent = 'Valid JSON';
-        jsonStatus.className = 'status-badge status-ok';
-        jsonStatus.style.display = 'inline-block';
-        return obj;
-      } catch (e) {
-        jsonStatus.textContent = 'Invalid JSON: ' + e.message.split('\n')[0];
-        jsonStatus.className = 'status-badge status-err';
-        jsonStatus.style.display = 'inline-block';
-        return null;
-      }
+      if (!jsonIn.value.trim()) { jsonStatus.style.display = 'none'; return null; }
+      try { const obj = JSON.parse(jsonIn.value); jsonStatus.textContent = 'Valid JSON'; jsonStatus.className = 'status-badge status-ok'; jsonStatus.style.display = 'inline-block'; return obj; } 
+      catch (e) { jsonStatus.textContent = 'Invalid JSON'; jsonStatus.className = 'status-badge status-err'; jsonStatus.style.display = 'inline-block'; return null; }
     }
+    function formatJSON(spacing) { const data = parseJSONContent(); if (data) jsonOut.value = JSON.stringify(data, null, spacing); }
+    function minifyJSON() { const data = parseJSONContent(); if (data) jsonOut.value = JSON.stringify(data); }
+    function validateJSON() { parseJSONContent(); }
+    function clearJSON() { jsonIn.value = ''; jsonOut.value = ''; jsonStatus.style.display = 'none'; }
 
-    function formatJSON(spacing) {
-      const data = parseJSONContent();
-      if (data !== null) {
-        jsonOut.value = JSON.stringify(data, null, spacing);
-      }
-    }
-
-    function minifyJSON() {
-      const data = parseJSONContent();
-      if (data !== null) {
-        jsonOut.value = JSON.stringify(data);
-      }
-    }
-
-    function validateJSON() {
-      parseJSONContent();
-    }
-
-    function clearJSON() {
-      jsonIn.value = '';
-      jsonOut.value = '';
-      jsonStatus.style.display = 'none';
-    }
-
-    // Word Counter Logic
     const textEditor = document.getElementById('text-editor');
     textEditor.addEventListener('input', computeStats);
-
     function computeStats() {
-      const txt = textEditor.value;
-      const chars = txt.length;
-      const charsNoSpace = txt.replace(/\s+/g, '').length;
-      const words = txt.trim() ? (txt.trim().match(/\S+/g) || []).length : 0;
-      const sentences = txt.trim() ? (txt.match(/[^.!?]+[.!?]+(\s|$)/g) || []).length : 0;
-      const paras = txt.trim() ? txt.split(/\n+/).filter(p => p.trim().length > 0).length : 0;
-      const readMin = Math.ceil(words / 200);
-
+      const txt = textEditor.value, words = txt.trim() ? (txt.trim().match(/\S+/g) || []).length : 0;
       document.getElementById('val-words').textContent = words;
-      document.getElementById('val-chars').textContent = chars;
-      document.getElementById('val-nospaces').textContent = charsNoSpace;
-      document.getElementById('val-sentences').textContent = sentences;
-      document.getElementById('val-paras').textContent = paras;
-      document.getElementById('val-reading').textContent = readMin + 'm';
+      document.getElementById('val-chars').textContent = txt.length;
+      document.getElementById('val-nospaces').textContent = txt.replace(/\s+/g, '').length;
+      document.getElementById('val-sentences').textContent = txt.trim() ? (txt.match(/[^.!?]+[.!?]+(\s|$)/g) || []).length : 0;
+      document.getElementById('val-paras').textContent = txt.trim() ? txt.split(/\n+/).filter(p => p.trim().length > 0).length : 0;
+      document.getElementById('val-reading').textContent = Math.ceil(words / 200) + 'm';
     }
-
     function changeCase(mode) {
       if (mode === 'upper') textEditor.value = textEditor.value.toUpperCase();
       if (mode === 'lower') textEditor.value = textEditor.value.toLowerCase();
-      if (mode === 'title') {
-        textEditor.value = textEditor.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-      }
+      if (mode === 'title') textEditor.value = textEditor.value.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
       computeStats();
     }
-
-    function removeExtraSpaces() {
-      textEditor.value = textEditor.value.replace(/[ \t]+/g, ' ').replace(/\n\s*\n/g, '\n\n').trim();
-      computeStats();
-    }
-
-    function clearText() {
-      textEditor.value = '';
-      computeStats();
-    }
+    function removeExtraSpaces() { textEditor.value = textEditor.value.replace(/[ \t]+/g, ' ').replace(/\n\s*\n/g, '\n\n').trim(); computeStats(); }
+    function clearText() { textEditor.value = ''; computeStats(); }
   </script>
 </body>
 </html>
