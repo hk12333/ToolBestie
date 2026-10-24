@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cron Expression Validator &amp; Next Run Times | ToolBestie</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3977672777442834"
+     crossorigin="anonymous"></script>
+<meta name="description" content="Validate cron expressions, read them in plain English and preview the next run times. Supports 5-field and 6-field cron, month and day names, and @daily shortcuts.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://toolbestie.com/cronvalidator.html">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:site_name" content="ToolBestie">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cron Expression Validator &amp; Next Run Times | ToolBestie">
+<meta property="og:description" content="Validate cron expressions, read them in plain English and preview the next run times. Supports 5-field and 6-field cron, month and day names, and @daily shortcuts.">
+<meta property="og:url" content="https://toolbestie.com/cronvalidator.html">
+<meta property="og:image" content="https://toolbestie.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>try{var t=localStorage.getItem('tb-theme');if(!t&&window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)t='light';if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/tools.css">
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "WebApplication", "name": "Cron Expression Validator", "url": "https://toolbestie.com/cronvalidator.html", "description": "Validate cron expressions, explain them in plain English and preview upcoming run times.", "applicationCategory": "DeveloperApplication", "operatingSystem": "Any (runs in a web browser)", "browserRequirements": "Requires JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://toolbestie.com/"}, {"@type": "ListItem", "position": 2, "name": "Cron Expression Validator", "item": "https://toolbestie.com/cronvalidator.html"}]}]</script>
+<!-- Google AdSense: after your site is approved, paste your AdSense script tag here (same on every page). -->
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="index.html" aria-label="ToolBestie home"><span class="brand-mark" aria-hidden="true">TB</span>ToolBestie</a>
+    <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <nav id="site-nav" class="site-nav" aria-label="Main"><a href="jsonviewer.html">JSON Viewer</a><a href="cronvalidator.html" aria-current="page">Cron Validator</a><a href="wordcounter.html">Word Counter</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+  <div class="page-head"><nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / Cron Validator</nav>
+    <h1>Cron expression validator</h1>
+    <p>Check a cron schedule for errors, read what it means in plain English, and see when it will run next.</p>
+  </div>
+  <section class="tool-shell" aria-label="Cron expression validator">
+  <div class="cron">
+    <div class="cron-in">
+      <div><label class="lbl" for="cronInput">Cron expression</label>
+        <input id="cronInput" class="field" type="text" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="*/15 9-17 * * 1-5" aria-describedby="status">
+      </div>
+      <div><label class="lbl" for="fmt">Format</label>
+        <select id="fmt" class="field"><option value="5">5 fields (standard crontab)</option><option value="seconds">6 fields (with seconds)</option></select></div>
+      <div><label class="lbl" for="tz">Show run times in</label>
+        <select id="tz" class="field"><option value="local" id="tzLocal">Local time</option><option value="utc">UTC</option></select></div>
+    </div>
+    <div class="presets" id="presets" aria-label="Examples"></div>
+    <div>
+      <span class="cstatus" id="status" role="status" aria-live="polite">Enter an expression to validate it</span>
+      <button class="btn" id="copyBtn" type="button" style="margin-left:8px">Copy expression</button>
+      <div id="result" aria-live="polite"></div>
+    </div>
+    <div class="fields" id="fields"></div>
+    <div id="warns"></div>
+    <div id="nextWrap"><h2>Next 10 runs</h2><ul class="runs" id="nextRuns"></ul></div>
+  </div>
+</section>
+</div>
+<div class="content">
+<h2>How to use the cron validator</h2>
+<p>Type a cron expression, or pick one of the examples, and the page checks the syntax as you type. If it is valid you get a plain-English description, a breakdown of each field, and the next ten times it will run. If it is not valid, the message names the field that is wrong and explains why.</p>
+<p>Choose <em>5 fields</em> for the standard Linux and Unix crontab format, or <em>6 fields</em> for schedulers that put a seconds field first, such as Spring and many Node.js libraries. Run times can be shown in your local time zone or in UTC.</p>
+
+<h2>Cron expression syntax</h2>
+<p>A standard cron expression has five fields separated by spaces:</p>
+<pre><code>┌───────── minute        (0–59)
+│ ┌─────── hour          (0–23)
+│ │ ┌───── day of month  (1–31)
+│ │ │ ┌─── month         (1–12 or JAN–DEC)
+│ │ │ │ ┌─ day of week   (0–7 or SUN–SAT, 0 and 7 are Sunday)
+* * * * *</code></pre>
+<div class="table-wrap"><table>
+<tr><th>Symbol</th><th>Meaning</th><th>Example</th></tr>
+<tr><td><code>*</code></td><td>Every value in the field</td><td><code>* * * * *</code> runs every minute</td></tr>
+<tr><td><code>,</code></td><td>A list of values</td><td><code>0 9,17 * * *</code> runs at 09:00 and 17:00</td></tr>
+<tr><td><code>-</code></td><td>A range of values</td><td><code>0 9 * * 1-5</code> runs at 09:00 Monday to Friday</td></tr>
+<tr><td><code>/</code></td><td>A step</td><td><code>*/10 * * * *</code> runs every 10 minutes</td></tr>
+<tr><td><code>@daily</code> etc.</td><td>Shortcuts</td><td><code>@hourly</code>, <code>@daily</code>, <code>@weekly</code>, <code>@monthly</code>, <code>@yearly</code>, <code>@reboot</code></td></tr>
+</table></div>
+
+<h2>Common schedule examples</h2>
+<div class="table-wrap"><table>
+<tr><th>Expression</th><th>Runs</th></tr>
+<tr><td><code>*/5 * * * *</code></td><td>Every 5 minutes</td></tr>
+<tr><td><code>0 * * * *</code></td><td>At the start of every hour</td></tr>
+<tr><td><code>30 2 * * *</code></td><td>Every day at 02:30</td></tr>
+<tr><td><code>0 9 * * 1-5</code></td><td>Weekdays at 09:00</td></tr>
+<tr><td><code>*/15 9-17 * * 1-5</code></td><td>Every 15 minutes between 09:00 and 17:59 on weekdays</td></tr>
+<tr><td><code>0 0 * * 0</code></td><td>Every Sunday at midnight</td></tr>
+<tr><td><code>0 0 1 * *</code></td><td>At midnight on the first day of every month</td></tr>
+<tr><td><code>0 0 1 1 *</code></td><td>At midnight on 1 January</td></tr>
+<tr><td><code>0 */6 * * *</code></td><td>Every 6 hours, at 00:00, 06:00, 12:00 and 18:00</td></tr>
+</table></div>
+
+<h2>Day of month and day of week: the rule that surprises people</h2>
+<p>When you set both the day-of-month and the day-of-week fields to something other than <code>*</code>, standard cron runs the job when <strong>either</strong> one matches. The expression <code>0 0 13 * 5</code> therefore runs on the 13th of every month and on every Friday. It does not mean only Friday the 13th. The validator follows this behaviour and warns you when it applies. Some other schedulers, such as Quartz, combine the two fields differently, so check the documentation of the one you use.</p>
+
+<h2>Other things that catch people out</h2>
+<ul>
+  <li><strong>Steps restart each cycle.</strong> <code>*/45 * * * *</code> runs at minute 0 and minute 45 of every hour, so the gap alternates between 45 and 15 minutes. It is not "every 45 minutes".</li>
+  <li><strong>Time zones.</strong> Cron uses the time zone of the machine or scheduler it runs on. Servers and containers are often set to UTC, which can differ from your local time. Use the time zone selector to compare.</li>
+  <li><strong>Daylight saving time.</strong> Jobs scheduled in an hour that is skipped or repeated may run late, run twice or not run, depending on the implementation. Scheduling at a time away from 01:00–03:00 local time, or running the server in UTC, avoids the problem.</li>
+  <li><strong>The percent sign.</strong> In a crontab file, an unescaped <code>%</code> in the command is treated as a newline. Write <code>\%</code> instead, for example in <code>date +\%F</code>.</li>
+  <li><strong>Minimal environment.</strong> Cron jobs run with a small <code>PATH</code> and none of your shell profile, so use absolute paths and redirect output, for example <code>&gt;&gt; /var/log/job.log 2&gt;&amp;1</code>.</li>
+</ul>
+
+<h2>What this validator does not cover</h2>
+<p>It checks standard Unix cron and the common six-field variant with seconds. It does not support Quartz or AWS EventBridge extras such as <code>?</code>, <code>L</code>, <code>W</code>, <code>#</code> or a year field, and it will tell you when it meets one. A value like <code>5/15</code> is accepted as "start at 5, then every 15", but some cron versions require the range form <code>5-59/15</code>, so the validator notes this.</p>
+
+<h2>Frequently asked questions</h2>
+<div class="faq">
+<details><summary>What does <code>* * * * *</code> mean?</summary><p>It runs every minute of every hour of every day. Each star means "every value" for its field.</p></details>
+<details><summary>How do I run a job every 10 minutes?</summary><p>Use <code>*/10 * * * *</code>. This works well because 10 divides evenly into 60. Steps that do not divide 60, such as 7 or 45, restart at the top of each hour.</p></details>
+<details><summary>Is 0 or 7 Sunday?</summary><p>Both. Most cron implementations accept 0 and 7 for Sunday, and you can also write SUN. Monday is 1 and Saturday is 6.</p></details>
+<details><summary>Are the next run times accurate?</summary><p>They are calculated from your device's clock using the rules above, in the time zone you choose. Your scheduler's own time zone setting decides when the job really runs.</p></details>
+<details><summary>Is my expression sent to a server?</summary><p>No. Parsing and calculation run in your browser.</p></details>
+</div>
+</div>
+<aside class="related" aria-label="Related tools"><h2>More free tools</h2><ul><li><a href="jsonviewer.html">JSON Viewer & Formatter<span>Format, validate, minify and explore JSON in a searchable tree. Fixes common syntax errors.</span></a></li><li><a href="wordcounter.html">Word Counter<span>Count words, characters and sentences, estimate reading time and check text limits.</span></a></li></ul></aside>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">TB</span>ToolBestie</a>
+        <p style="margin-top:10px">Free, fast online tools for developers and writers. Your input is processed in your browser and is not uploaded.</p></div>
+      <nav aria-label="Tools"><h2>Tools</h2><ul><li><a href="jsonviewer.html">JSON Viewer & Formatter</a></li><li><a href="cronvalidator.html">Cron Expression Validator</a></li><li><a href="wordcounter.html">Word Counter</a></li></ul></nav>
+      <nav aria-label="Company"><h2>Company</h2><ul><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
+      <nav aria-label="Legal"><h2>Legal</h2><ul><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></nav>
+    </div>
+    <div class="foot-bottom">&copy; <span data-year>2026</span> ToolBestie. All rights reserved.</div>
+  </div>
+</footer>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<script src="js/site.js" defer></script>
+<script src="js/cron.js" defer></script>
+</body>
+</html>
