@@ -174,3 +174,11 @@ kbd{padding:2px 7px;background:var(--bg);border:1px solid var(--border);border-r
   .tabs{max-width:100%;overflow-x:auto}
   .tab{white-space:nowrap}
 }
+
+/* icons inside the tool */
+.tab{display:inline-flex;align-items:center;gap:6px}
+.ctx-item{display:flex;align-items:center;gap:9px}
+.ctx-item .ico{color:var(--text3)}
+.search-ico{display:inline-grid;place-items:center}
+.btn .ico{margin-right:0}
+.big-note .btn{margin-right:6px}

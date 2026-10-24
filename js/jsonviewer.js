@@ -2,6 +2,11 @@
 var parsed=null,parsedOk=false,view='tree',srchQ='',selRow=null,ctxData={};
 var lastErr=null,lastErrPos=-1,errLineIdx=-1,forceTree=false,inputTimer=null;
 var TREE_LIMIT=40000;
+var IC={wrench:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>',
+ locate:'<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>',
+ tree:'<path d="M3 5h4M3 12h4M3 19h4"/><path d="M7 5v14"/><path d="M7 12h6M7 19h6M7 5h6"/><path d="M17 5h4M17 12h4M17 19h4"/>',
+ code:'<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>'};
+function ico(n){return '<svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[n]+'</svg>';}
 function $(id){return document.getElementById(id);}
 
 // ─── Input ───────────────────────────────────────────────────
@@ -136,10 +141,10 @@ function showRichError(raw,err,pos){
   var causes=diagnoseCommonIssues(raw);
   $('output').innerHTML='<div class="ecard"><div class="ecard-hdr"><div class="ecard-icon">✕</div><div class="ecard-info"><div class="ecard-title">Invalid JSON</div>'+
     (locText?'<div class="ecard-loc">'+locText+'</div>':'')+'</div>'+
-    (pos>=0?'<button class="btn" onclick="gotoErrPos()" style="margin-left:auto;flex-shrink:0">Go to error</button>':'')+'</div>'+
+    (pos>=0?'<button class="btn" onclick="gotoErrPos()" style="margin-left:auto;flex-shrink:0">'+ico('locate')+'Go to error</button>':'')+'</div>'+
     '<div class="ecard-msg">'+esc(err.message)+'</div>'+ctxHtml+
     (causes?'<div style="padding:0 16px 12px"><div class="ectx-lbl" style="margin-bottom:8px">Likely causes</div>'+causes+'</div>':'')+
-    '<div class="ecard-foot"><button class="btn danger" onclick="doFix()">Try auto-fix</button><span class="ecard-hint">Fixes trailing commas, single quotes, unquoted keys, comments, undefined and unclosed brackets</span></div></div>';
+    '<div class="ecard-foot"><button class="btn danger" onclick="doFix()">'+ico('wrench')+'Try auto-fix</button><span class="ecard-hint">Fixes trailing commas, single quotes, unquoted keys, comments, undefined and unclosed brackets</span></div></div>';
 }
 function diagnoseCommonIssues(raw){
   var r=JsonCore.inspect(raw),is=[];
@@ -223,7 +228,7 @@ function render(){
   else if(view==='min')renderRaw(true);
 }
 function showTreeLimit(){
-  $('output').innerHTML='<div class="big-note"><strong>Large document ('+countNodes(parsed).toLocaleString()+' nodes)</strong><p>The tree view is paused above '+TREE_LIMIT.toLocaleString()+' nodes to keep your browser responsive. Raw and Minified views work at any size.</p><div><button class="btn primary" onclick="forceTree=true;render()">Render tree anyway</button> <button class="btn" onclick="setView(\'raw\')">Open Raw view</button></div></div>';
+  $('output').innerHTML='<div class="big-note"><strong>Large document ('+countNodes(parsed).toLocaleString()+' nodes)</strong><p>The tree view is paused above '+TREE_LIMIT.toLocaleString()+' nodes to keep your browser responsive. Raw and Minified views work at any size.</p><div><button class="btn primary" onclick="forceTree=true;render()">'+ico('tree')+'Render tree anyway</button> <button class="btn" onclick="setView(\'raw\')">'+ico('code')+'Open Raw view</button></div></div>';
 }
 function showEmpty(){
   $('output').innerHTML='<div class="empty"><div class="empty-ico">{ }</div><div class="empty-txt">No JSON to display</div><div class="empty-sub">Paste JSON in the editor, or load the sample</div></div>';
@@ -254,10 +259,10 @@ function showValidate(raw){
       '<div class="vinfo-item"><div class="vinfo-lbl">Size</div><div class="vinfo-val" style="font-size:16px">'+fmtBytes(raw.length)+'</div></div></div></div>';
   }else{
     var lc=lastErrPos>=0?posToLineCol(raw,lastErrPos):null;
-    status='<div class="vstatus err"><div class="vstatus-ico">❌</div><div><div class="vstatus-title">Invalid JSON</div><div class="vstatus-sub">'+(lc?'Error at line '+lc.line+', column '+lc.col:'Parse error')+'</div></div>'+(lastErrPos>=0?'<button class="btn danger" style="margin-left:auto;flex-shrink:0" onclick="gotoErrPos()">Go to error</button>':'')+'</div>';
+    status='<div class="vstatus err"><div class="vstatus-ico">❌</div><div><div class="vstatus-title">Invalid JSON</div><div class="vstatus-sub">'+(lc?'Error at line '+lc.line+', column '+lc.col:'Parse error')+'</div></div>'+(lastErrPos>=0?'<button class="btn danger" style="margin-left:auto;flex-shrink:0" onclick="gotoErrPos()">'+ico('locate')+'Go to error</button>':'')+'</div>';
   }
   var ch=checks.map(function(c){return '<div class="vcheck '+c.type+'"><span class="vchk-ico">'+c.ico+'</span><span class="vchk-lbl">'+c.lbl+'</span>'+(c.detail?'<span class="vchk-detail">'+esc(c.detail)+'</span>':'')+'</div>';}).join('');
-  $('output').innerHTML='<div class="vcard">'+status+'<div><div class="vsec-title" style="margin-bottom:8px">Checks ('+pass+'/'+checks.length+' passed)</div><div class="vchecks">'+ch+'</div></div>'+info+(!parsedOk?'<div><button class="btn danger" onclick="doFix()">Try auto-fix</button></div>':'')+'</div>';
+  $('output').innerHTML='<div class="vcard">'+status+'<div><div class="vsec-title" style="margin-bottom:8px">Checks ('+pass+'/'+checks.length+' passed)</div><div class="vchecks">'+ch+'</div></div>'+info+(!parsedOk?'<div><button class="btn danger" onclick="doFix()">'+ico('wrench')+'Try auto-fix</button></div>':'')+'</div>';
 }
 
 // ─── Raw / minified ──────────────────────────────────────────
@@ -294,11 +299,12 @@ function buildNode(parent,val,key,path,isLast){
     var cnt=entries.length,ob=arr?'[':'{',cb=arr?']':'}';
     var nd=document.createElement('div');nd.className='tnode';
     var row=mkRow(path),tog=mkToggle(cnt?'▼':' ');
+    row.appendChild(tog);
     if(key!==null)row.insertAdjacentHTML('beforeend',keyHtml(key));
     var sumEl=document.createElement('span');sumEl.className='jsummary';sumEl.style.display='none';
     sumEl.innerHTML='<span class="jbrk">'+ob+'</span> '+cnt+' '+(arr?'items':'keys')+' <span class="jbrk">…'+cb+'</span>';
     var openEl=document.createElement('span');openEl.innerHTML='<span class="jbrk">'+ob+'</span>';
-    row.appendChild(tog);row.appendChild(sumEl);row.appendChild(openEl);row.appendChild(mkCpBtn(path));
+    row.appendChild(sumEl);row.appendChild(openEl);row.appendChild(mkCpBtn(path));
     var ch=document.createElement('div');ch.className='children';
     if(cnt){
       entries.forEach(function(e,i){buildNode(ch,e[1],e[0],pathFor(path,e[0],arr),i===cnt-1);});
@@ -437,5 +443,14 @@ function closeModal(){var m=$('modal');if(m&&m.classList.contains('on')){m.class
   document.addEventListener('mouseup',function(){if(!drag)return;drag=false;rz.classList.remove('drag');document.body.style.userSelect='';document.body.style.cursor='';});
 })();
 
+// Auto-format pasted minified JSON (only when the whole editor is being replaced)
+$('inp').addEventListener('paste',function(){
+  var ta=this,all=!ta.value.trim()||(ta.selectionStart===0&&ta.selectionEnd===ta.value.length);
+  if(!all)return;
+  setTimeout(function(){
+    var v=ta.value;
+    if(v.length<2000000&&v.indexOf('\n')<0&&isValidJson(v)){ta.value=JsonCore.format(v);onInput();toast('Formatted on paste','ok');}
+  },0);
+});
 renderLineNums('');
 showEmpty();
