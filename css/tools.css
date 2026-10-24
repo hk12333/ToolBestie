@@ -1,0 +1,65 @@
+/* Word Counter + Cron Validator styles */
+.muted{color:var(--text3)}
+.tool-shell{border:1px solid var(--border);border-radius:12px;background:var(--surface);overflow:hidden}
+.tool-shell .tool-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tool-shell .tool-bar .sp{margin-left:auto}
+
+/* Word counter */
+.wc{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr)}
+.wc-text{border-right:1px solid var(--border);display:flex;flex-direction:column;min-width:0}
+.wc-text textarea{flex:1;min-height:420px;width:100%;resize:vertical;border:0;outline:0;padding:16px;background:var(--bg);color:var(--text);font-size:16px;line-height:1.65;font-family:var(--font)}
+.wc-text textarea::placeholder{color:var(--text3)}
+.wc-side{padding:16px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.counters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.counter{background:var(--bg);border:1px solid var(--border-soft);border-radius:9px;padding:10px 12px}
+.counter b{display:block;font-size:24px;line-height:1.2;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.counter span{font-size:12.5px;color:var(--text2)}
+.counter.main b{color:var(--link)}
+.times{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.side-h{font-size:14px;font-weight:650;margin-bottom:8px}
+.meter{height:8px;border-radius:99px;background:var(--surface2);border:1px solid var(--border-soft);overflow:hidden;margin:10px 0 6px}
+.meter div{height:100%;width:0;background:var(--green);transition:width .15s}
+.meter div.near{background:var(--yellow)}
+.meter div.over{background:var(--red)}
+#meterMsg{font-size:13.5px;color:var(--text2)}
+.row{display:flex;gap:8px;align-items:center}
+#customRow{display:none;margin-top:8px}
+.kw{list-style:none;padding:0;font-size:14px}
+.kw li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--border-soft)}
+.kw li:last-child{border:0}
+.check{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--text2);margin-top:8px}
+
+/* Cron */
+.cron{padding:18px;display:flex;flex-direction:column;gap:18px}
+.cron-in{display:grid;grid-template-columns:minmax(0,1fr) 230px 230px;gap:12px;align-items:end}
+#cronInput{font-family:var(--mono);font-size:22px;padding:12px 14px;letter-spacing:.02em}
+#cronInput[aria-invalid="true"]{border-color:var(--red)}
+.presets{display:flex;flex-wrap:wrap;gap:8px}
+.cstatus{display:inline-block;font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--text2)}
+.cstatus.good{background:rgba(63,185,80,.15);color:var(--green)}
+.cstatus.bad{background:rgba(248,81,73,.15);color:var(--red)}
+#result{font-size:clamp(20px,2.6vw,26px);line-height:1.35;font-weight:650;letter-spacing:-.015em;margin-top:10px}
+#result .muted{font-size:14px;font-weight:400}
+#result code{font-family:var(--mono);font-size:13px}
+.errs{list-style:none;padding:0;font-size:15px;font-weight:500;color:var(--red)}
+.errs li{margin:4px 0}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.fbox{background:var(--bg);border:1px solid var(--border-soft);border-radius:9px;padding:10px 12px;min-width:0}
+.fbox.bad{border-color:var(--red)}
+.fbox .fl{font-size:12.5px;color:var(--text2)}
+.fbox code{display:block;font-family:var(--mono);font-size:20px;font-weight:600;margin:2px 0;overflow-wrap:anywhere}
+.fbox .fm{font-size:13px;color:var(--text2)}
+.fbox.bad .fm{color:var(--red)}
+#nextWrap h2{font-size:16px;margin-bottom:6px}
+.runs{list-style:none;padding:0;font-size:14.5px}
+.runs li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--border-soft);flex-wrap:wrap}
+.runs li:last-child{border:0}
+.runs .never{color:var(--red)}
+.warn{font-size:14px;color:var(--yellow);margin-top:10px;padding:8px 12px;border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:6px;background:var(--bg)}
+@media(max-width:860px){
+  .wc{grid-template-columns:1fr}
+  .wc-text{border-right:0;border-bottom:1px solid var(--border)}
+  .wc-text textarea{min-height:300px}
+  .cron-in{grid-template-columns:1fr}
+}
+@media(max-width:480px){.counters{grid-template-columns:repeat(2,minmax(0,1fr))}#cronInput{font-size:18px}}

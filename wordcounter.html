@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word Counter: Words, Characters &amp; Reading Time | ToolBestie</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3977672777442834"
+     crossorigin="anonymous"></script>
+<meta name="description" content="Free online word counter. Count words, characters, sentences and paragraphs, estimate reading and speaking time, and check text against limits for X, SMS and SEO.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://toolbestie.com/wordcounter.html">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:site_name" content="ToolBestie">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Word Counter: Words, Characters &amp; Reading Time | ToolBestie">
+<meta property="og:description" content="Free online word counter. Count words, characters, sentences and paragraphs, estimate reading and speaking time, and check text against limits for X, SMS and SEO.">
+<meta property="og:url" content="https://toolbestie.com/wordcounter.html">
+<meta property="og:image" content="https://toolbestie.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>try{var t=localStorage.getItem('tb-theme');if(!t&&window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)t='light';if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/tools.css">
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "WebApplication", "name": "Word Counter", "url": "https://toolbestie.com/wordcounter.html", "description": "Free online word, character and sentence counter with reading time.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in a web browser)", "browserRequirements": "Requires JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://toolbestie.com/"}, {"@type": "ListItem", "position": 2, "name": "Word Counter", "item": "https://toolbestie.com/wordcounter.html"}]}]</script>
+<!-- Google AdSense: after your site is approved, paste your AdSense script tag here (same on every page). -->
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="index.html" aria-label="ToolBestie home"><span class="brand-mark" aria-hidden="true">TB</span>ToolBestie</a>
+    <button class="icon-btn nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <nav id="site-nav" class="site-nav" aria-label="Main"><a href="jsonviewer.html">JSON Viewer</a><a href="cronvalidator.html">Cron Validator</a><a href="wordcounter.html" aria-current="page">Word Counter</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+  <div class="page-head"><nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / Word Counter</nav>
+    <h1>Word counter</h1>
+    <p>Count words, characters, sentences and paragraphs as you type. Your text stays in your browser.</p>
+  </div>
+  <section class="tool-shell" aria-label="Word counter">
+  <div class="tool-bar">
+    <button class="btn" id="btnUpper" type="button">UPPERCASE</button>
+    <button class="btn" id="btnLower" type="button">lowercase</button>
+    <button class="btn" id="btnTitle" type="button">Title Case</button>
+    <button class="btn" id="btnSent" type="button">Sentence case</button>
+    <button class="btn" id="btnSpaces" type="button">Remove extra spaces</button>
+    <button class="btn" id="undoBtn" type="button" style="display:none">Undo</button>
+    <span class="sp"></span>
+    <button class="btn" id="btnCopy" type="button">Copy text</button>
+    <button class="btn" id="btnClear" type="button">Clear</button>
+  </div>
+  <div class="wc">
+    <div class="wc-text"><label class="sr" for="wcText" style="position:absolute;left:-9999px">Text to count</label>
+      <textarea id="wcText" placeholder="Type or paste your text here. Counts update as you type." spellcheck="true"></textarea></div>
+    <div class="wc-side">
+      <div class="counters" aria-label="Counts">
+        <div class="counter main"><b id="sWords">0</b><span>Words</span></div>
+        <div class="counter main"><b id="sChars">0</b><span>Characters</span></div>
+        <div class="counter"><b id="sCharsNS">0</b><span>No spaces</span></div>
+        <div class="counter"><b id="sSent">0</b><span>Sentences</span></div>
+        <div class="counter"><b id="sPara">0</b><span>Paragraphs</span></div>
+        <div class="counter"><b id="sLines">0</b><span>Lines</span></div>
+      </div>
+      <div class="times">
+        <div class="counter"><b id="sRead" style="font-size:18px">0 sec</b><span>Reading time</span></div>
+        <div class="counter"><b id="sSpeak" style="font-size:18px">0 sec</b><span>Speaking time</span></div>
+      </div>
+      <div>
+        <h2 class="side-h">Check against a limit</h2>
+        <label class="lbl" for="limitSel" style="position:absolute;left:-9999px">Limit</label>
+        <select id="limitSel" class="field"></select>
+        <div class="row" id="customRow"><input id="customLimit" class="field" type="number" min="1" placeholder="Limit" aria-label="Custom limit"><select id="customUnit" class="field" aria-label="Unit"><option value="characters">characters</option><option value="words">words</option></select></div>
+        <div class="meter" aria-hidden="true"><div id="meterBar"></div></div>
+        <div id="meterMsg">Pick a limit to see how much room is left.</div>
+      </div>
+      <div>
+        <h2 class="side-h">Most repeated words</h2>
+        <ul class="kw" id="kw"><li class="muted">No repeated words yet.</li></ul>
+        <label class="check"><input type="checkbox" id="ignoreCommon" checked> Ignore common words (the, and, of…)</label>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+<div class="content">
+<h2>How to use the word counter</h2>
+<p>Type or paste text into the box and the counts update immediately: words, characters with and without spaces, sentences, paragraphs and lines. Below the counts you will find an estimated reading time and speaking time, a check against common character limits, and a list of the words you repeat most.</p>
+<p>The buttons above the text change its case or remove extra spaces. If you apply one by accident, <em>Undo</em> restores the previous text. Nothing you type is stored or sent anywhere.</p>
+
+<h2>How the counts are calculated</h2>
+<ul>
+  <li><strong>Words</strong> are groups of characters separated by spaces or line breaks. A group counts only if it contains a letter or digit, so a lone dash does not count. Hyphenated words such as <code>well-known</code> and addresses such as <code>name@example.com</code> count as one word, which matches how Google Docs counts. Chinese, Japanese and Thai text, which has no spaces between words, is split using your browser's word-boundary rules.</li>
+  <li><strong>Characters</strong> count what you see. An emoji, or a letter with an accent, counts as one character even when it is stored as several code points. <em>No spaces</em> leaves out spaces, tabs and line breaks.</li>
+  <li><strong>Sentences</strong> are detected with your browser's sentence rules, which handle most abbreviations such as <code>Dr.</code> correctly. Very informal text may be miscounted.</li>
+  <li><strong>Paragraphs</strong> are the non-empty lines of text, so every press of Enter starts a new paragraph, as it does in a word processor. <strong>Lines</strong> counts every line, including blank ones.</li>
+</ul>
+<p>Other tools can report slightly different totals. Microsoft Word, Google Docs and this page each make small choices about hyphens, slashes and symbols. If you must meet an exact requirement, such as an essay limit, check with the tool the recipient will use.</p>
+
+<h2>Reading time and speaking time</h2>
+<p>Reading time assumes 238 words per minute, the average silent reading speed for adults reading non-fiction found in a 2019 review of reading studies. Speaking time assumes 130 words per minute, a comfortable pace for a presentation or voice-over. Your own speed will vary with the material and the audience, so treat both as estimates.</p>
+
+<h2>Common character limits</h2>
+<p>Platforms cut off text at different lengths. These are typical values at the time of writing, and the limit menu in the tool uses them. Platforms change their rules, so confirm with the platform when it matters.</p>
+<div class="table-wrap"><table>
+<tr><th>Where</th><th>Limit</th><th>Notes</th></tr>
+<tr><td>X (Twitter) post</td><td>280 characters</td><td>Paid plans allow longer posts.</td></tr>
+<tr><td>SMS</td><td>160 characters</td><td>Per message with standard characters. Emoji and some accented letters lower this to 70.</td></tr>
+<tr><td>SEO page title</td><td>about 60 characters</td><td>Search engines cut titles by pixel width, so wide letters fit fewer characters.</td></tr>
+<tr><td>Meta description</td><td>about 155–160 characters</td><td>Longer descriptions are often shortened in search results.</td></tr>
+<tr><td>YouTube title</td><td>100 characters</td><td>Description: 5,000 characters.</td></tr>
+<tr><td>Instagram caption</td><td>2,200 characters</td><td></td></tr>
+<tr><td>LinkedIn post</td><td>3,000 characters</td><td></td></tr>
+</table></div>
+
+<h2>Tips for writing to a length</h2>
+<ul>
+  <li>Write first and count afterwards. Cutting a draft that is a little long usually improves it.</li>
+  <li>Check the most repeated words list. A word that appears far more often than you meant to use it is a sign to vary your wording or tighten a paragraph.</li>
+  <li>For web copy, aim for short paragraphs. Two or three sentences are easier to scan on a phone.</li>
+  <li>Do not write to a target keyword percentage. Search engines do not use a fixed keyword density, and repeating a phrase to hit one makes text harder to read.</li>
+</ul>
+
+<h2>Frequently asked questions</h2>
+<div class="faq">
+<details><summary>Does the word counter save or upload my text?</summary><p>No. Counting happens in your browser and the text is not stored or transmitted. Closing or reloading the page clears it.</p></details>
+<details><summary>Does it count spaces as characters?</summary><p>The Characters figure includes spaces and line breaks. The No spaces figure leaves them out, so you can use whichever your requirement specifies.</p></details>
+<details><summary>Why is my count different from Microsoft Word?</summary><p>Each program decides slightly differently how to treat hyphens, slashes, numbers and standalone symbols. A difference of a few words in a long document is normal.</p></details>
+<details><summary>Does it work for languages other than English?</summary><p>Yes. Languages that use spaces between words, including Spanish, French, German, Hindi and Korean, are counted by spaces. For Chinese, Japanese and Thai your browser's word segmentation is used. The list of common words to ignore is English only.</p></details>
+<details><summary>How is reading time calculated?</summary><p>It divides the word count by 238 words per minute. Dense technical writing takes longer to read, and light fiction may be quicker.</p></details>
+</div>
+</div>
+<aside class="related" aria-label="Related tools"><h2>More free tools</h2><ul><li><a href="jsonviewer.html">JSON Viewer & Formatter<span>Format, validate, minify and explore JSON in a searchable tree. Fixes common syntax errors.</span></a></li><li><a href="cronvalidator.html">Cron Expression Validator<span>Check cron syntax, read it in plain English and preview the next run times.</span></a></li></ul></aside>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">TB</span>ToolBestie</a>
+        <p style="margin-top:10px">Free, fast online tools for developers and writers. Your input is processed in your browser and is not uploaded.</p></div>
+      <nav aria-label="Tools"><h2>Tools</h2><ul><li><a href="jsonviewer.html">JSON Viewer & Formatter</a></li><li><a href="cronvalidator.html">Cron Expression Validator</a></li><li><a href="wordcounter.html">Word Counter</a></li></ul></nav>
+      <nav aria-label="Company"><h2>Company</h2><ul><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
+      <nav aria-label="Legal"><h2>Legal</h2><ul><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></nav>
+    </div>
+    <div class="foot-bottom">&copy; <span data-year>2026</span> ToolBestie. All rights reserved.</div>
+  </div>
+</footer>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<script src="js/site.js" defer></script>
+<script src="js/wordcounter.js" defer></script>
+</body>
+</html>
