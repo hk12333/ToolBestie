@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script>try{var t=localStorage.getItem('tb-theme');if(!t&&window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)t='light';if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/jsonviewer.css">
+<link rel="stylesheet" href="css/jsonviewer.css?v=6">
 <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "WebApplication", "name": "JSON Viewer & Formatter", "url": "https://toolbestie.com/jsonviewer", "description": "Free online JSON viewer, formatter, validator and minifier.", "applicationCategory": "DeveloperApplication", "operatingSystem": "Any (runs in a web browser)", "browserRequirements": "Requires JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://toolbestie.com/"}, {"@type": "ListItem", "position": 2, "name": "JSON Viewer & Formatter", "item": "https://toolbestie.com/jsonviewer"}]}]</script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3977672777442834"
      crossorigin="anonymous"></script>
@@ -43,6 +43,12 @@
     <button class="btn" type="button" onclick="openFile()"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.2 10H20a2 2 0 0 1 1.9 2.6l-1.6 6A2 2 0 0 1 18.4 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.7.9l.8 1.2a2 2 0 0 0 1.7.9H18a2 2 0 0 1 2 2v2"/></svg>Open file</button>
     <button class="btn" type="button" onclick="exportFile()"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Export</button>
     <span class="sp"></span>
+    <div class="tabs seg" role="group" aria-label="Panel layout">
+      <button class="tab on" type="button" id="lay-split" aria-pressed="true" onclick="setLayout('split')" title="Input and tree side by side">Split</button>
+      <button class="tab" type="button" id="lay-out" aria-pressed="false" onclick="setLayout('out')" title="Show the tree / output only">Output</button>
+      <button class="tab" type="button" id="lay-in" aria-pressed="false" onclick="setLayout('in')" title="Show the input only">Input</button>
+    </div>
+    <button class="btn" type="button" id="fsBtn" onclick="toggleFullscreen()" aria-pressed="false" title="Full screen (Ctrl+Shift+Enter)"><span class="fs-enter"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>Full screen</span><span class="fs-exit"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>Exit full screen</span></button>
     <button class="btn" type="button" onclick="showShortcuts()"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M7 15h10"/></svg>Shortcuts</button>
   </div>
   <input type="file" id="filePick" accept=".json,.txt,application/json,text/plain" style="display:none" onchange="handleFile(event)" aria-label="Choose a JSON file">
@@ -73,23 +79,29 @@
       </div>
     </div>
     <div class="resizer" id="resizer" aria-hidden="true"></div>
-    <div class="pane pane-right">
+    <div class="pane pane-right" data-view="raw">
       <div class="toolbar">
         <div class="tabs" role="tablist" aria-label="Output view">
-          <button class="tab on" role="tab" aria-selected="true" id="tab-tree" onclick="setView('tree')"><svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h4M3 12h4M3 19h4"/><path d="M7 5v14"/><path d="M7 12h6M7 19h6M7 5h6"/><path d="M17 5h4M17 12h4M17 19h4"/></svg>Tree</button>
-          <button class="tab" role="tab" aria-selected="false" id="tab-raw" onclick="setView('raw')"><svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>Raw</button>
+          <button class="tab on" role="tab" aria-selected="true" id="tab-raw" onclick="setView('raw')" title="Editable JSON"><svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>Raw</button>
+          <button class="tab" role="tab" aria-selected="false" id="tab-tree" onclick="setView('tree')"><svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h4M3 12h4M3 19h4"/><path d="M7 5v14"/><path d="M7 12h6M7 19h6M7 5h6"/><path d="M17 5h4M17 12h4M17 19h4"/></svg>Tree</button>
           <button class="tab" role="tab" aria-selected="false" id="tab-min" onclick="setView('min')"><svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>Minified</button>
           <button class="tab" role="tab" aria-selected="false" id="tab-validate" onclick="setView('validate')"><svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>Validate</button>
         </div>
         <div class="search"><span class="search-ico" aria-hidden="true"><svg class="ico" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
-          <input id="srch" type="search" aria-label="Search keys and values" placeholder="Search (Ctrl+K)" oninput="onSearch()"></div>
-        <button class="btn icon" type="button" onclick="expandAll()" title="Expand all" aria-label="Expand all"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>Expand</button>
-        <button class="btn icon" type="button" onclick="collapseAll()" title="Collapse all" aria-label="Collapse all"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 20 5-5 5 5"/><path d="m7 4 5 5 5-5"/></svg>Collapse</button>
-        <button class="btn icon" type="button" onclick="copyOut()" title="Copy output" aria-label="Copy output"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
-        <div class="stats" id="stats" style="display:none">Nodes <span id="skeys">0</span> &nbsp;Size <span id="ssize">0</span> &nbsp;Depth <span id="sdepth">0</span></div>
+          <input id="srch" type="search" aria-label="Search keys and values" placeholder="Search (Ctrl+K)" oninput="onSearch()"><span class="search-cnt" id="srchCnt" aria-live="polite"></span>
+          <button class="search-nav raw-only" type="button" onclick="rawStep(-1)" title="Previous match (Shift+Enter)" aria-label="Previous match">&#9650;</button>
+          <button class="search-nav raw-only" type="button" onclick="rawStep(1)" title="Next match (Enter)" aria-label="Next match">&#9660;</button></div>
+        <button class="btn icon ib tree-only" type="button" onclick="expandAll()" title="Expand all (Ctrl+])" aria-label="Expand all"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg><span class="lbl">Expand</span></button>
+        <button class="btn icon ib tree-only" type="button" onclick="collapseAll()" title="Collapse all (Ctrl+[)" aria-label="Collapse all"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 20 5-5 5 5"/><path d="m7 4 5 5 5-5"/></svg><span class="lbl">Collapse</span></button>
+        <select class="lvl tree-only" id="lvl" aria-label="Expand tree to level" title="Expand the tree to a chosen depth" onchange="expandToLevel(this.value)">
+          <option value="">Levels</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option><option value="4">Level 4</option><option value="all">All</option>
+        </select>
+        <button class="btn icon" type="button" onclick="fontStep(-1)" title="Smaller text" aria-label="Smaller text">A&minus;</button>
+        <button class="btn icon" type="button" onclick="fontStep(1)" title="Larger text" aria-label="Larger text">A+</button>
+        <button class="btn icon ib" type="button" onclick="copyOut()" title="Copy" aria-label="Copy"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="lbl">Copy</span></button>
       </div>
       <div class="output" id="output" aria-live="polite"></div>
-      <div class="path-bar"><span style="color:var(--text3)">Path:</span><span id="pathVal">Click a node to see its path</span></div>
+      <div class="path-bar"><span style="color:var(--text3)">Path:</span><span id="pathVal">Click a node to see its path</span><div class="stats" id="stats" style="display:none;margin-left:auto">Nodes <span id="skeys">0</span> &nbsp;Size <span id="ssize">0</span> &nbsp;Depth <span id="sdepth">0</span></div></div>
     </div>
   </div>
 </section>
@@ -115,7 +127,8 @@
       <div class="sc-row"><span class="sc-desc">Export file</span><div class="sc-keys"><kbd>Ctrl</kbd><kbd>S</kbd></div></div>
       <div class="sc-row"><span class="sc-desc">Expand all</span><div class="sc-keys"><kbd>Ctrl</kbd><kbd>]</kbd></div></div>
       <div class="sc-row"><span class="sc-desc">Collapse all</span><div class="sc-keys"><kbd>Ctrl</kbd><kbd>[</kbd></div></div>
-      <div class="sc-row"><span class="sc-desc">Close dialog or menu</span><div class="sc-keys"><kbd>Esc</kbd></div></div>
+      <div class="sc-row"><span class="sc-desc">Full screen on / off</span><div class="sc-keys"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>Enter</kbd></div></div>
+      <div class="sc-row"><span class="sc-desc">Close dialog, menu or full screen</span><div class="sc-keys"><kbd>Esc</kbd></div></div>
     </div>
     <p style="margin-top:14px"><button class="btn" id="modalClose" type="button" onclick="closeModal()"><svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>Close</button></p>
   </div>
@@ -127,7 +140,7 @@
   <li><strong>Add your JSON.</strong> Paste it into the Input panel, drop a <code>.json</code> file onto it, or choose <em>Open file</em>. <em>Load sample</em> fills in an example so you can try every feature.</li>
   <li><strong>Check the status bar.</strong> It reports whether the JSON is valid. If it is not, you get the line and column of the first problem, plus a red marker in the editor.</li>
   <li><strong>Format or minify.</strong> <em>Format</em> indents the document with two spaces. <em>Minify</em> removes all optional whitespace, which is useful for API requests and config values.</li>
-  <li><strong>Explore the result.</strong> Switch between Tree, Raw, Minified and Validate. In the tree, click any row to see its path (for example <code>$.inventory[0].title</code>) and copy it, or right-click for more options.</li>
+  <li><strong>Explore the result.</strong> Switch between Raw, Tree, Minified and Validate. In the tree, click any row to see its path (for example <code>$.inventory[0].title</code>) and copy it, or right-click for more options.</li>
 </ol>
 
 <h2>What you can do with it</h2>
@@ -136,6 +149,7 @@
   <li><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M7 12h14"/><path d="M11 18h10"/></svg><span><strong>Beautify and minify</strong> without changing your data. Number digits, key order and string escapes are kept exactly as you typed them.</span></li>
   <li><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h4M3 12h4M3 19h4"/><path d="M7 5v14"/><path d="M7 12h6M7 19h6M7 5h6"/><path d="M17 5h4M17 12h4M17 19h4"/></svg><span><strong>Browse as a tree</strong> with collapsible nodes, item counts, and a search box that highlights matching keys and values.</span></li>
   <li><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/></svg><span><strong>Auto-fix</strong> common mistakes such as trailing commas, single quotes and comments.</span></li>
+  <li><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span><strong>Full screen and layouts</strong> hide the page around the tool and let you switch between split, tree-only and input-only views. Expand the tree to a chosen level and change the text size. The Raw tab is an editor: change the JSON there and the tree, minified and validate views update as you type. Press <kbd>Esc</kbd> to leave full screen.</span></li>
   <li><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span><strong>Export</strong> the formatted result as <code>data.json</code>.</span></li>
 </ul>
 
@@ -204,6 +218,6 @@
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 <script src="js/site.js" defer></script>
 <script src="js/json-core.js" defer></script>
-<script src="js/jsonviewer.js" defer></script>
+<script src="js/jsonviewer.js?v=6" defer></script>
 </body>
 </html>
