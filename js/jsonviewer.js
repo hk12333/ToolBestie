@@ -1,5 +1,5 @@
 /* JSON Viewer & Formatter — UI. Depends on json-core.js and site.js */
-var parsed=null,parsedOk=false,view='tree',srchQ='',selRow=null,ctxData={};
+var parsed=null,parsedOk=false,view='raw',srchQ='',selRow=null,ctxData={};
 var lastErr=null,lastErrPos=-1,errLineIdx=-1,forceTree=false,inputTimer=null;
 var TREE_LIMIT=40000;
 var IC={wrench:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"/>',
@@ -16,38 +16,45 @@ function onInputSoon(){
   if(len>100000){inputTimer=setTimeout(onInput,250);} else onInput();
 }
 function onInput(){
-  var raw=$('inp').value;
+  var raw=$('inp').value,fromRaw=rawSrc;rawSrc=false;
+  syncOutClass();
   updateLines(raw); renderLineNums(raw); clearErrGutter(); forceTree=false;
   if(!raw.trim()){
     parsed=null;parsedOk=false;lastErr=null;lastErrPos=-1;
-    setStatus('idle');showEmpty();clearStats();
+    setStatus('idle');clearStats();if(view==='raw'){if(fromRaw)rawMeta();else renderRawEditor();}else showEmpty();
     $('fixBtn').style.display='none';$('sbarLoc').style.display='none';return;
   }
   try{
     parsed=JSON.parse(raw);parsedOk=true;lastErr=null;lastErrPos=-1;
     setStatus('ok','Valid JSON');calcStats(parsed);
     $('fixBtn').style.display='none';$('sbarLoc').style.display='none';
-    if(view==='validate') showValidate(raw); else render();
+    if(view==='validate') showValidate(raw); else if(view==='raw'){if(fromRaw)rawMeta();else renderRawEditor();} else render();
   }catch(e){
     parsed=null;parsedOk=false;lastErr=e;
     lastErrPos=extractErrPos(raw,e);
     setStatus('err','Invalid JSON');clearStats();
     $('fixBtn').style.display='inline-flex';
     showErrLoc(lastErrPos,raw);showErrGutter(raw,lastErrPos);
-    if(view==='validate') showValidate(raw); else showRichError(raw,e,lastErrPos);
+    if(view==='validate') showValidate(raw); else if(view==='raw'){if(fromRaw)rawMeta();else renderRawEditor();} else showRichError(raw,e,lastErrPos);
   }
 }
 
 function onKey(e){
   var c=e.ctrlKey||e.metaKey,k=e.key.toLowerCase();
-  if(c&&k==='enter'){e.preventDefault();doFormat();}
+  if(c&&!e.shiftKey&&k==='enter'){e.preventDefault();doFormat();}
   else if(c&&!e.shiftKey&&k==='m'){e.preventDefault();doMinify();}
   else if(c&&e.shiftKey&&k==='f'){e.preventDefault();doFix();}
 }
 document.addEventListener('keydown',function(e){
   var c=e.ctrlKey||e.metaKey,k=e.key.toLowerCase();
-  if(k==='escape'){closeModal();closeCtx();return;}
-  if(c&&k==='k'){e.preventDefault();$('srch').focus();}
+  if(k==='escape'){
+    var layer=$('modal').classList.contains('on')||$('ctx').classList.contains('on');
+    closeModal();closeCtx();
+    if(!layer&&fsOn)setFullscreen(false);
+    return;
+  }
+  if(c&&e.shiftKey&&k==='enter'){e.preventDefault();toggleFullscreen();return;}
+  if(c&&k==='k'){e.preventDefault();if(layMode==='in')setLayout('split');if(view!=='tree'&&view!=='raw')setView('raw');$('srch').focus();}
   else if(c&&!e.shiftKey&&k==='o'){e.preventDefault();openFile();}
   else if(c&&!e.shiftKey&&k==='s'){e.preventDefault();exportFile();}
   else if(c&&k===']'){e.preventDefault();expandAll();}
@@ -162,23 +169,23 @@ function doFix(){
   var inp=$('inp');if(!inp.value.trim())return;
   var r=JsonCore.repair(inp.value);
   if(!r){toast('Nothing could be fixed automatically. Check the error location.','err');return;}
-  inp.value=r.json;onInput();
+  inp.value=r.json;resetScroll();onInput();
   if(r.valid) toast('Fixed: '+r.repairs.join('; '),'ok');
   else toast('Applied some repairs ('+r.repairs.join('; ')+') but the JSON is still invalid.','warn');
 }
 function doFormat(){
   var inp=$('inp');if(!inp.value.trim())return;
   var ok=isValidJson(inp.value);
-  inp.value=JsonCore.format(inp.value);onInput();
+  inp.value=JsonCore.format(inp.value);resetScroll();onInput();
   toast(ok?'Formatted':'Invalid JSON — only spacing was adjusted',ok?'ok':'warn');
 }
 function doMinify(){
   var inp=$('inp');if(!inp.value.trim())return;
   var ok=isValidJson(inp.value);
-  inp.value=JsonCore.minify(inp.value);onInput();
+  inp.value=JsonCore.minify(inp.value);resetScroll();onInput();
   toast(ok?'Minified':'Invalid JSON — whitespace and comments were removed',ok?'ok':'warn');
 }
-function doClear(){$('inp').value='';onInput();$('inp').focus();}
+function doClear(){$('inp').value='';onInput();(view==='raw'&&$('rawEd')?$('rawEd'):$('inp')).focus();}
 
 // ─── Status & stats ──────────────────────────────────────────
 function setStatus(state,msg){
@@ -214,7 +221,9 @@ function setView(v){
   ['tree','raw','min','validate'].forEach(function(t){
     var el=$('tab-'+t);el.classList.toggle('on',t===v);el.setAttribute('aria-selected',t===v?'true':'false');
   });
+  document.querySelector('.pane-right').setAttribute('data-view',v);syncOutClass();if(v!=='raw')$('srchCnt').textContent='';
   var raw=$('inp').value;
+  if(v==='raw'){renderRawEditor();return;}
   if(v==='validate')showValidate(raw);
   else if(!parsedOk){if(lastErr)showRichError(raw,lastErr,lastErrPos);else showEmpty();}
   else render();
@@ -224,7 +233,7 @@ function render(){
   if(view==='tree'){
     if(!forceTree&&countNodes(parsed)>TREE_LIMIT){showTreeLimit();return;}
     renderTree(parsed);
-  }else if(view==='raw')renderRaw(false);
+  }else if(view==='raw')renderRawEditor();
   else if(view==='min')renderRaw(true);
 }
 function showTreeLimit(){
@@ -282,8 +291,9 @@ function highlight(json){
 }
 
 // ─── Tree ────────────────────────────────────────────────────
+var bd=0;
 function renderTree(data){
-  var wrap=document.createElement('div');wrap.className='tree';
+  bd=0;var wrap=document.createElement('div');wrap.className='tree';
   buildNode(wrap,data,null,'$',true);
   var out=$('output');out.innerHTML='';out.appendChild(wrap);
   if(srchQ)applySearch();
@@ -297,26 +307,26 @@ function buildNode(parent,val,key,path,isLast){
   if(val!==null&&typeof val==='object'){
     var arr=Array.isArray(val),entries=arr?val.map(function(v,i){return [i,v];}):Object.entries(val);
     var cnt=entries.length,ob=arr?'[':'{',cb=arr?']':'}';
-    var nd=document.createElement('div');nd.className='tnode';
+    var nd=document.createElement('div');nd.className='tnode';var bcls='jbrk b'+(bd%4);
     var row=mkRow(path),tog=mkToggle(cnt?'▼':' ');
     row.appendChild(tog);
     if(key!==null)row.insertAdjacentHTML('beforeend',keyHtml(key));
     var sumEl=document.createElement('span');sumEl.className='jsummary';sumEl.style.display='none';
-    sumEl.innerHTML='<span class="jbrk">'+ob+'</span> '+cnt+' '+(arr?'items':'keys')+' <span class="jbrk">…'+cb+'</span>';
-    var openEl=document.createElement('span');openEl.innerHTML='<span class="jbrk">'+ob+'</span>';
+    sumEl.innerHTML='<span class="'+bcls+'">'+ob+'</span> '+cnt+' '+(arr?'items':'keys')+' <span class="'+bcls+'">…'+cb+'</span>';
+    var openEl=document.createElement('span');openEl.innerHTML='<span class="'+bcls+'">'+ob+'</span>';
     row.appendChild(sumEl);row.appendChild(openEl);row.appendChild(mkCpBtn(path));
     var ch=document.createElement('div');ch.className='children';
     if(cnt){
-      entries.forEach(function(e,i){buildNode(ch,e[1],e[0],pathFor(path,e[0],arr),i===cnt-1);});
+      bd++;entries.forEach(function(e,i){buildNode(ch,e[1],e[0],pathFor(path,e[0],arr),i===cnt-1);});bd--;
       var cr=document.createElement('div');cr.className='trow';cr.style.cursor='default';
       var sp=mkToggle(' ');sp.style.visibility='hidden';cr.appendChild(sp);
-      cr.insertAdjacentHTML('beforeend','<span class="jbrk">'+cb+(isLast?'':',')+'</span>');ch.appendChild(cr);
+      cr.insertAdjacentHTML('beforeend','<span class="'+bcls+'">'+cb+(isLast?'':',')+'</span>');ch.appendChild(cr);
       tog.onclick=function(e){
         e.stopPropagation();
         var hidden=ch.classList.toggle('hide');tog.textContent=hidden?'▶':'▼';
         sumEl.style.display=hidden?'inline':'none';openEl.style.display=hidden?'none':'inline';
       };
-    }else openEl.innerHTML='<span class="jbrk">'+ob+cb+(isLast?'':',')+'</span>';
+    }else openEl.innerHTML='<span class="'+bcls+'">'+ob+cb+(isLast?'':',')+'</span>';
     row.onclick=function(e){if(e.target===tog)return;selNode(row,path);};
     row.oncontextmenu=function(e){e.preventDefault();showCtx(e,path,key,val,nd);};
     nd.appendChild(row);if(cnt)nd.appendChild(ch);parent.appendChild(nd);
@@ -359,7 +369,7 @@ function expandAll(){document.querySelectorAll('.tnode > .children').forEach(fun
 function collapseAll(){document.querySelectorAll('.tnode > .children').forEach(function(c){setOpen(c,false);});}
 
 // ─── Search ──────────────────────────────────────────────────
-function onSearch(){srchQ=$('srch').value.toLowerCase().trim();if(view==='tree'&&parsedOk)render();}
+function onSearch(){srchQ=$('srch').value.toLowerCase().trim();rawMi=-1;if(view==='tree'&&parsedOk)render();else if(view==='raw')rawSearch(true);}
 function applySearch(){
   if(!srchQ)return;
   document.querySelectorAll('.trow').forEach(function(row){
@@ -391,13 +401,14 @@ function ctxAction(a){
 
 // ─── Copy / file / export / sample ───────────────────────────
 function copyOut(){
+  if(view==='raw'){var rt=$('rawEd');if(!rt||!rt.value.trim()){toast('Nothing to copy','err');return;}clip(rt.value);return;}
   if(!parsedOk){toast('Nothing to copy — fix the JSON first','err');return;}
   clip(view==='min'?JsonCore.minify($('inp').value):JsonCore.format($('inp').value));
 }
 function openFile(){$('filePick').click();}
 function loadText(f){
   var r=new FileReader();
-  r.onload=function(ev){$('inp').value=String(ev.target.result||'');onInput();toast('Loaded '+f.name,'ok');};
+  r.onload=function(ev){$('inp').value=String(ev.target.result||'');resetScroll();onInput();toast('Loaded '+f.name,'ok');};
   r.onerror=function(){toast('Could not read that file','err');};
   r.readAsText(f);
 }
@@ -426,8 +437,184 @@ function loadSample(){
     inventory:[{isbn:"978-0-14-312774-1",title:"Penguin Classics: Emma",price:9.99,tags:["fiction","classic"],inStock:true},
     {isbn:"978-0-06-112008-4",title:"To Kill a Mockingbird",price:8.5,tags:["fiction"],inStock:false}],
     website:"https://example.com/books",closedOn:null};
-  $('inp').value=JSON.stringify(s,null,2);onInput();toast('Sample loaded','ok');
+  $('inp').value=JSON.stringify(s,null,2);resetScroll();onInput();toast('Sample loaded','ok');
 }
+
+// ─── Full screen, layout, levels, text size ──────────────────
+// Full screen = the tool fills the browser window and the site header/footer are hidden (not the browser's own full screen).
+var fsOn=false,FS_INERT='.site-footer,main > :not(.tool):not(.ctx):not(.modal-bg)';
+function toggleFullscreen(){setFullscreen(!fsOn);}
+function setFullscreen(on){
+  var tool=document.querySelector('.app-tool'),btn=$('fsBtn'),de=document.documentElement;
+  if(!tool||on===fsOn)return;
+  fsOn=on;closeCtx();
+  if(on)window.scrollTo(0,0);
+  tool.classList.toggle('is-fs',on);de.classList.toggle('fs-open',on);
+  btn.setAttribute('aria-pressed',on?'true':'false');
+  btn.title=on?'Exit full screen (Esc)':'Full screen (Ctrl+Shift+Enter)';
+  document.querySelectorAll(FS_INERT).forEach(function(el){if(on)el.setAttribute('inert','');else el.removeAttribute('inert');});
+}
+var layMode='split';
+function setLayout(m){
+  layMode=m;var L=$('layout');
+  L.classList.toggle('lay-out',m==='out');L.classList.toggle('lay-in',m==='in');
+  ['split','out','in'].forEach(function(t){var b=$('lay-'+t);b.classList.toggle('on',t===m);b.setAttribute('aria-pressed',t===m?'true':'false');});
+  if(m==='in')$('inp').focus();
+}
+function expandToLevel(v){
+  var sel=$('lvl');if(!v)return;
+  var n=v==='all'?1e9:parseInt(v,10);
+  document.querySelectorAll('.tnode > .children').forEach(function(c){
+    var d=0,p=c.parentElement;
+    while(p&&p.id!=='output'){if(p.classList&&p.classList.contains('children'))d++;p=p.parentElement;}
+    setOpen(c,d<n);
+  });
+  sel.value='';
+}
+var vfs=13; // kept in memory only, nothing is stored
+function fontStep(d){vfs=Math.max(10,Math.min(22,vfs+d));document.documentElement.style.setProperty('--vfs',vfs+'px');if($('rawEd'))rawSync();}
+function resetScroll(){var t=$('inp');t.scrollTop=0;t.scrollLeft=0;syncScroll();}
+
+// ─── Raw editor (editable, syntax coloured) ───────────────────
+// The textarea sits on top of a coloured <pre> with identical metrics. The Input box stays the single source of truth.
+var rawSrc=false,rawErrLine=-1;
+function syncOutClass(){$('output').classList.toggle('is-raw',view==='raw');}
+function rawText(){var v=$('inp').value;if(!v.trim())return '';return isValidJson(v)?JsonCore.format(v):v;}
+function hlEdit(t){
+  var re=/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,out='',last=0,m,depth=0;
+  function gap(s){   // brackets get a colour per nesting level, commas and colons are muted
+    return s.replace(/[^{}\[\],:]+|[{}\[\],:]/g,function(x){
+      if(x==='{'||x==='['){var o='<span class="jbrk b'+(depth%4)+'">'+x+'</span>';depth++;return o;}
+      if(x==='}'||x===']'){depth=Math.max(0,depth-1);return '<span class="jbrk b'+(depth%4)+'">'+x+'</span>';}
+      if(x===','||x===':')return '<span class="jp">'+x+'</span>';
+      return esc(x);
+    });
+  }
+  while((m=re.exec(t))){
+    out+=gap(t.slice(last,m.index));
+    var tok=m[0],c='jnum';
+    if(tok.charAt(0)==='"'){
+      if(/:$/.test(tok)){var k=tok.replace(/\s*:$/,'');out+='<span class="jkey">'+esc(k)+'</span><span class="jp">'+esc(tok.slice(k.length))+'</span>';last=re.lastIndex;continue;}
+      c='jstr';
+    }else if(tok==='true'||tok==='false')c='jbool';else if(tok==='null')c='jnull';
+    out+='<span class="'+c+'">'+esc(tok)+'</span>';last=re.lastIndex;
+  }
+  return out+gap(t.slice(last));
+}
+function buildRawEd(){
+  var w=document.createElement('div');w.id='rawWrap';w.className='rawed';
+  w.innerHTML='<div class="rawed-err" id="rawErr" role="alert" style="display:none"></div>'+
+    '<div class="rawed-body"><div class="rawed-bar" id="rawBar"></div>'+
+    '<div class="rawed-gut" aria-hidden="true"><div class="rawed-gutin" id="rawGut"></div></div>'+
+    '<div class="rawed-stack"><pre class="rawed-mk" id="rawMk" aria-hidden="true"></pre><pre class="rawed-hl" id="rawHl" aria-hidden="true"></pre>'+
+    '<textarea id="rawEd" class="rawed-ta" aria-label="Raw JSON, editable" wrap="off" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Paste or type JSON here"></textarea></div></div>';
+  var ta=w.querySelector('#rawEd');
+  ta.addEventListener('input',onRawInput);ta.addEventListener('scroll',rawSync);
+  ta.addEventListener('keydown',onKey);ta.addEventListener('paste',onRawPaste);
+  return w;
+}
+function renderRawEditor(){
+  var out=$('output'),w=$('rawWrap');
+  if(!w){out.innerHTML='';w=buildRawEd();out.appendChild(w);}
+  var ta=$('rawEd'),st=ta.scrollTop,sl=ta.scrollLeft,t=rawText();
+  if(ta.value!==t)ta.value=t;
+  ta.scrollTop=st;ta.scrollLeft=sl;
+  rawRefresh();rawMeta();
+}
+function onRawInput(){
+  var ta=$('rawEd');$('inp').value=ta.value;rawSrc=true;
+  rawRefresh();onInputSoon();
+}
+function onRawPaste(){
+  var ta=this,all=!ta.value.trim()||(ta.selectionStart===0&&ta.selectionEnd===ta.value.length);
+  if(!all)return;
+  setTimeout(function(){
+    var v=ta.value;
+    if(v.length<2000000&&v.indexOf('\n')<0&&isValidJson(v)){ta.value=JsonCore.format(v);onRawInput();toast('Formatted on paste','ok');}
+  },0);
+}
+function rawRefresh(){
+  var ta=$('rawEd');if(!ta)return;
+  var t=ta.value,big=t.length>150000,n=t?t.split('\n').length:1,g=new Array(n);
+  $('rawWrap').classList.toggle('plain',big);   // very large text: skip colouring to stay responsive
+  $('rawHl').innerHTML=big?'':hlEdit(t)+'\n';
+  for(var i=0;i<n;i++)g[i]=i+1;
+  $('rawGut').textContent=g.join('\n');
+  $('rawWrap').style.setProperty('--gd',Math.max(2,String(n).length));
+  rawSearch(false);rawSync();
+}
+function rawSync(){
+  var ta=$('rawEd'),bar=$('rawBar');if(!ta)return;
+  var pre=$('rawHl'),mk=$('rawMk');pre.scrollTop=mk.scrollTop=ta.scrollTop;pre.scrollLeft=mk.scrollLeft=ta.scrollLeft;
+  $('rawGut').style.transform='translateY('+(-ta.scrollTop)+'px)';
+  if(rawErrLine>=0){
+    var lh=parseFloat(getComputedStyle(ta).lineHeight)||21;
+    bar.style.display='block';bar.style.height=lh+'px';bar.style.transform='translateY('+(12+rawErrLine*lh-ta.scrollTop)+'px)';
+  }else bar.style.display='none';
+}
+function rawMeta(){
+  var s=$('rawErr'),ta=$('rawEd');if(!s||!ta)return;
+  rawErrLine=-1;
+  if(!parsedOk&&lastErr&&ta.value.trim()){
+    var lc=lastErrPos>=0?posToLineCol($('inp').value,lastErrPos):null;
+    if(lc)rawErrLine=lc.line-1;
+    s.style.display='flex';
+    s.innerHTML='<span class="rawed-err-t">'+(lc?'Invalid JSON · line '+lc.line+', col '+lc.col:'Invalid JSON')+'</span>'+
+      '<span class="rawed-err-m" title="'+esc(lastErr.message)+'">'+esc(lastErr.message)+'</span>'+
+      (lc?'<button class="btn" type="button" onclick="rawGoto()">'+ico('locate')+'Go to error</button>':'')+
+      '<button class="btn danger" type="button" onclick="doFix()">'+ico('wrench')+'Auto-fix</button>';
+  }else s.style.display='none';
+  rawSync();
+}
+function rawGoto(){
+  var ta=$('rawEd');if(!ta||lastErrPos<0)return;
+  var lc=posToLineCol(ta.value,lastErrPos),lh=parseFloat(getComputedStyle(ta).lineHeight)||21;
+  ta.focus();ta.setSelectionRange(lastErrPos,Math.min(lastErrPos+1,ta.value.length));
+  ta.scrollTop=Math.max(0,(lc.line-4)*lh);rawSync();
+}
+
+// ─── Search inside the Raw editor ─────────────────────────────
+var rawMatches=[],rawMi=-1,rawCW=0,rawCWkey='';
+function rawSearch(jump){
+  var ta=$('rawEd'),mk=$('rawMk'),cnt=$('srchCnt');if(!ta||!mk)return;
+  rawMatches=[];
+  if(!srchQ){mk.innerHTML='';cnt.textContent='';rawMi=-1;return;}
+  var t=ta.value,re=new RegExp(srchQ.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m;
+  while((m=re.exec(t))&&rawMatches.length<5000)rawMatches.push(m.index);
+  if(rawMi<0||rawMi>=rawMatches.length)rawMi=rawMatches.length?0:-1;
+  rawPaintMarks();
+  if(jump&&rawMi>=0)rawShow(rawMi);
+}
+function rawPaintMarks(){
+  var ta=$('rawEd'),t=ta.value,n=srchQ.length,h='',last=0;
+  rawMatches.forEach(function(s,k){
+    h+=esc(t.slice(last,s))+'<mark class="m'+(k===rawMi?' cur':'')+'">'+esc(t.slice(s,s+n))+'</mark>';last=s+n;
+  });
+  $('rawMk').innerHTML=h+esc(t.slice(last))+'\n';
+  $('srchCnt').textContent=rawMatches.length?(rawMi+1)+'/'+rawMatches.length+(rawMatches.length>=5000?'+':''):'No results';
+  rawSync();
+}
+function rawStep(d){
+  if(view!=='raw'||!rawMatches.length)return;
+  rawMi=(rawMi+d+rawMatches.length)%rawMatches.length;rawPaintMarks();rawShow(rawMi);
+}
+function rawCharW(ta){
+  var cs=getComputedStyle(ta),key=cs.fontSize+cs.fontFamily;
+  if(key!==rawCWkey){var c=document.createElement('canvas').getContext('2d');c.font=cs.fontSize+' '+cs.fontFamily;rawCW=c.measureText('0').width||8;rawCWkey=key;}
+  return rawCW;
+}
+function rawShow(k){
+  var ta=$('rawEd'),pos=rawMatches[k];if(!ta||pos==null)return;
+  var before=ta.value.slice(0,pos),line=before.split('\n').length-1,col=pos-before.lastIndexOf('\n')-1;
+  var lh=parseFloat(getComputedStyle(ta).lineHeight)||21,x=col*rawCharW(ta);
+  ta.scrollTop=Math.max(0,line*lh-ta.clientHeight/2);
+  if(x<ta.scrollLeft||x>ta.scrollLeft+ta.clientWidth-120)ta.scrollLeft=Math.max(0,x-ta.clientWidth/3);
+  try{ta.setSelectionRange(pos,pos+srchQ.length);}catch(e){}
+  rawSync();
+}
+$('srch').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&view==='raw'){e.preventDefault();rawStep(e.shiftKey?-1:1);}
+});
 
 // ─── Modal ───────────────────────────────────────────────────
 var lastFocus=null;
@@ -449,8 +636,8 @@ $('inp').addEventListener('paste',function(){
   if(!all)return;
   setTimeout(function(){
     var v=ta.value;
-    if(v.length<2000000&&v.indexOf('\n')<0&&isValidJson(v)){ta.value=JsonCore.format(v);onInput();toast('Formatted on paste','ok');}
+    if(v.length<2000000&&v.indexOf('\n')<0&&isValidJson(v)){ta.value=JsonCore.format(v);resetScroll();onInput();toast('Formatted on paste','ok');}
   },0);
 });
 renderLineNums('');
-showEmpty();
+syncOutClass();renderRawEditor();
